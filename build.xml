@@ -1,0 +1,58 @@
+<project name="sample" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <property name="source" value="1.8"/>
+    <property name="target" value="1.8"/>
+    <property name="srcDir" value="src/main/java"/>
+    <property name="testSrcDir" value="src/test/java"/>
+    <property name="libDir" value="lib"/>
+    <property name="buildDir" value="target"/>
+    <property name="srcCompileDir" value="${buildDir}/classes"/>
+    <property name="testSrcCompileDir" value="${buildDir}/testClasses"/>
+
+    <path id="srcClasspath">
+        <pathelement location="${srcCompileDir}"/>
+        <fileset dir="${libDir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="testSrcClasspath">
+        <path refid="srcClasspath"/>
+        <pathelement location="${testSrcCompileDir}"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${libDir}"/>
+        <mkdir dir="${srcCompileDir}"/>
+        <mkdir dir="${testSrcCompileDir}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${buildDir}"/>
+    </target>
+
+    <target name="resolve" description="--> retreive dependencies with ivy" depends="init">
+        <ivy:retrieve/>
+    </target>
+
+    <target name="compile" depends="resolve">
+        <javac srcdir="${srcDir}" destdir="${srcCompileDir}" includeAntRuntime="no" source="${source}" target="${target}">
+            <classpath refid="srcClasspath"/>
+        </javac>
+        <javac srcdir="${testSrcDir}" destdir="${testSrcCompileDir}" includeAntRuntime="no" source="${source}" target="${target}">
+            <classpath refid="testSrcClasspath"/>
+        </javac>
+    </target>
+
+    <target name="test" depends="compile">
+        <junit fork="yes" haltonfailure="yes">
+            <classpath refid="testSrcClasspath"/>
+
+            <batchtest>
+                <fileset dir="${testSrcDir}">
+                    <include name="**/*.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+</project>
