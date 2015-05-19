@@ -7,7 +7,7 @@
     <property name="libDir" value="lib"/>
     <property name="buildDir" value="target"/>
     <property name="srcCompileDir" value="${buildDir}/classes"/>
-    <property name="testSrcCompileDir" value="${buildDir}/testClasses"/>
+    <property name="testSrcCompileDir" value="${buildDir}/test-classes"/>
 
     <path id="srcClasspath">
         <pathelement location="${srcCompileDir}"/>
